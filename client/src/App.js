@@ -109,7 +109,13 @@ class App extends Component {
         <input type="file" onChange = {this.captureFile}/>
         <button type="submit" > Submit</button>
         </form>
+        <p>
+          */run ipfs daemon in a seperate terminal window/*
+          Try uploading a file to IPFS while you have an IPFS daemon running!!
+          If you see the IPFS hash in the console then the file was upload successfully!
+        </p>
         <div>The stored value is: {this.state.storageValue} the ipfs version is {this.state.ipfshash}</div>
+       <a href={"https://gateway.ipfs.io/ipfs/" + this.state.ipfsHash}>Click to see on IPFS. </a>
       </div>
     );
   }
