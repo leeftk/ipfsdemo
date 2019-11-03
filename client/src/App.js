@@ -3,6 +3,10 @@ import SimpleStorageContract from "./contracts/SimpleStorage.json";
 import getWeb3 from "./utils/getWeb3";
 import "./App.css";
 import ipfs from "./ipfs.js";
+import "bootstrap/dist/css/bootstrap.min.css";
+import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+//import TestimonialsPage from "./TestimonialPage.js";
 
 class App extends Component {
   state = {
@@ -59,7 +63,6 @@ class App extends Component {
   convertToBuffer = async reader => {
     const buffer = await ipfs.Buffer.from(reader.result);
     this.setState({ buffer });
-    console.log(buffer);
   };
 
   //converts file submitted to a buffer
@@ -78,13 +81,16 @@ class App extends Component {
 
     const accounts = this.state.accounts;
     const buffer = this.state.buffer;
-    console.log("Sending from Metamask account: " + accounts[0]);
-    console.log(buffer);
 
+    console.log("Sending from Metamask account: " + accounts[0]);
+
+    // add buffer to ipfs
     await ipfs.add(this.state.buffer, (err, ipfsHash) => {
-      console.log(err, ipfsHash);
+      //update state of ipfshash in front end
       this.setState({ ipfsHash: ipfsHash[0].hash });
-      console.log(this.state.ipfsHash);
+
+      console.log("ipfs hash:", this.state.ipfsHash);
+      console.log("buffer:", this.state.buffer);
     });
   };
 
@@ -93,7 +99,6 @@ class App extends Component {
       //console.log(this.state.buffer)
       return <div>Loading Web3, accounts, and contract...</div>;
     }
-    console.log(this.state.buffer);
     return (
       <div className="App">
         <h1>Good to Go!</h1>
@@ -106,19 +111,38 @@ class App extends Component {
         <p>
           Try changing the value stored on <strong>line 40</strong> of App.js.
         </p>
-        <form onSubmit={this.ipfsSubmit}>
-          <input type="file" onChange={this.captureFile} />
-          <button type="submit"> Submit</button>
-        </form>
+        <div>The stored value is: {this.state.storageValue}</div>
+        <br />
+        <h2>IPFS Example</h2>
         <p>
-          */run ipfs daemon in a seperate terminal window/* Try uploading a file
-          to IPFS while you have an IPFS daemon running!! If you see the IPFS
-          hash in the console then the file was upload successfully!
+          {/*run ipfs daemon in a seperate terminal window*/}
+          Run an IPFS daemon in another window. Upload a file to IPFS. If you
+          see the IPFS hash in the console then the file was upload
+          successfully!
         </p>
-        <div>
-          The stored value is: {this.state.storageValue} the ipfs version is{" "}
-          {this.state.ipfshash}
-        </div>
+        <form onSubmit={this.ipfsSubmit}>
+          <div className="input-group buttonadj">
+            >
+            <Container className="container">
+              <div className="custom-file" onChange={this.captureFile}>
+                <input
+                  type="file"
+                  className="custom-file-input buttonadj"
+                  id="inputGroupFile01"
+                  aria-describedby="inputGroupFileAddon01"
+                />
+                <label className="custom-file-label" htmlFor="inputGroupFile01">
+                  Choose file
+                </label>
+              </div>
+            </Container>
+          </div>
+
+          <Button type="submit" variant="light">
+            Submit
+          </Button>
+          <div className="custom-file"></div>
+        </form>
         <a href={"https://gateway.ipfs.io/ipfs/" + this.state.ipfsHash}>
           Click to see on IPFS.{" "}
         </a>
